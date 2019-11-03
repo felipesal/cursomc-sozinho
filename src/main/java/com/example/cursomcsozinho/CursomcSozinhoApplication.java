@@ -1,5 +1,6 @@
 package com.example.cursomcsozinho;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,22 @@ import com.example.cursomcsozinho.domain.Cidade;
 import com.example.cursomcsozinho.domain.Cliente;
 import com.example.cursomcsozinho.domain.Endereco;
 import com.example.cursomcsozinho.domain.Estado;
+import com.example.cursomcsozinho.domain.ItemPedido;
+import com.example.cursomcsozinho.domain.Pagamento;
+import com.example.cursomcsozinho.domain.PagamentoComBoleto;
+import com.example.cursomcsozinho.domain.PagamentoComCartao;
+import com.example.cursomcsozinho.domain.Pedido;
 import com.example.cursomcsozinho.domain.Produto;
+import com.example.cursomcsozinho.domain.enums.EstadoPagamento;
 import com.example.cursomcsozinho.domain.enums.TipoCliente;
 import com.example.cursomcsozinho.repositories.CategoriaRepository;
 import com.example.cursomcsozinho.repositories.CidadeRepository;
 import com.example.cursomcsozinho.repositories.ClienteRepository;
 import com.example.cursomcsozinho.repositories.EnderecoRepository;
 import com.example.cursomcsozinho.repositories.EstadoRepository;
+import com.example.cursomcsozinho.repositories.ItemPedidoRepository;
+import com.example.cursomcsozinho.repositories.PagamentoRepository;
+import com.example.cursomcsozinho.repositories.PedidoRepository;
 import com.example.cursomcsozinho.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -41,12 +51,23 @@ public class CursomcSozinhoApplication implements CommandLineRunner {
 	@Autowired
 	private ClienteRepository clienteRepository;
 	
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
+	
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcSozinhoApplication.class, args);
 		}
 
 	@Override
 	public void run(String... args) throws Exception {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
 		Categoria cat1 = new Categoria(null, "Informática");
 		Categoria cat2 = new Categoria(null, "Escritório");
@@ -90,6 +111,34 @@ public class CursomcSozinhoApplication implements CommandLineRunner {
 		
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
+		
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
+		ped1.setPagamento(pagto1);
+		ped2.setPagamento(pagto2);
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+		
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.0, 1, 2000.00);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.0, 2, 80.00);
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.0, 1, 800.00);
+		
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		ped2.getItens().addAll(Arrays.asList(ip3));
+		
+		p1.getItens().addAll(Arrays.asList(ip1));
+		p2.getItens().addAll(Arrays.asList(ip3));
+		p3.getItens().addAll(Arrays.asList(ip2));
+		
+		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
+	
 	}
 
 	
