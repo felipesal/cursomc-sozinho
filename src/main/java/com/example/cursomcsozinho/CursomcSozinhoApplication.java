@@ -108,6 +108,7 @@ public class CursomcSozinhoApplication implements CommandLineRunner {
 		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", c2, cli1);
 
 		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		cli1.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
 		
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));

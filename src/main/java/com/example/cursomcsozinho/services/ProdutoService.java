@@ -20,7 +20,7 @@ public class ProdutoService {
 		Optional<Produto> obj = repo.findById(id);
 		
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
-				"Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));
+				"Objeto não encontrado! Id: " + id + ", Tipo: " + Produto.class.getName()));
 	}
 	
 }
