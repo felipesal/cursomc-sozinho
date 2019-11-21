@@ -1,12 +1,15 @@
 package com.example.cursomcsozinho.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.example.cursomcsozinho.domain.Categoria;
 import com.example.cursomcsozinho.repositories.CategoriaRepository;
+import com.example.cursomcsozinho.resources.exceptions.DataIntegrityException;
 import com.example.cursomcsozinho.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -32,6 +35,19 @@ public class CategoriaService {
 		find(obj.getId());
 		
 		return repo.save(obj);
+	}
+	
+	public void delete(Integer id) {
+		try {
+		repo.deleteById(id);
+		}
+		catch(DataIntegrityViolationException e) {
+			throw new DataIntegrityException("Não é possível excluir pois existem produtos associados.");
+		}
+	}
+	
+	public List<Categoria> findAll(){
+		return repo.findAll();
 	}
 	
 }
