@@ -10,9 +10,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.example.cursomcsozinho.domain.Cidade;
 import com.example.cursomcsozinho.domain.Cliente;
+import com.example.cursomcsozinho.domain.Endereco;
 import com.example.cursomcsozinho.domain.dto.ClienteDTO;
+import com.example.cursomcsozinho.domain.dto.ClienteNewDTO;
+import com.example.cursomcsozinho.domain.enums.TipoCliente;
 import com.example.cursomcsozinho.repositories.ClienteRepository;
+import com.example.cursomcsozinho.repositories.EnderecoRepository;
 import com.example.cursomcsozinho.resources.exceptions.DataIntegrityException;
 import com.example.cursomcsozinho.services.exceptions.ObjectNotFoundException;
 
@@ -21,6 +26,9 @@ public class ClienteService {
 	
 	@Autowired
 	private ClienteRepository repo;
+	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 	
 	
 	public Cliente find(Integer id) {
@@ -62,10 +70,33 @@ public class ClienteService {
 		return new Cliente(clienteDto.getId(), clienteDto.getNome(), clienteDto.getEmail(), null, null);
 	}
 	
+	public Cliente fromDto(ClienteNewDTO objDto) {
+		Cliente cli = new Cliente(null,objDto.getNome(),objDto.getEmail(), objDto.getCpfOuCnpj(),TipoCliente.toEnum(objDto.getTipo()));
+		Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
+		Endereco end = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(), objDto.getBairro(), objDto.getCep(), cid, cli);
+		cli.getEnderecos().add(end);
+		cli.getTelefones().add(objDto.getTelefone1());
+		
+		if(objDto.getTelefone2() != null) {
+			cli.getTelefones().add(objDto.getTelefone2());
+		}
+		if(objDto.getTelefone3() != null) {
+			cli.getTelefones().add(objDto.getTelefone3());
+		}
+		return cli;
+	}
+	
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
 		
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		
 		return repo.findAll(pageRequest);
+	}
+	
+	public Cliente insert(Cliente obj) {
+		obj.setId(null);
+		obj = repo.save(obj);
+		enderecoRepository.saveAll(obj.getEnderecos());
+		return obj;
 	}
 }
