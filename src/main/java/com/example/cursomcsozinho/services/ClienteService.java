@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.cursomcsozinho.domain.Cidade;
 import com.example.cursomcsozinho.domain.Cliente;
@@ -58,7 +59,7 @@ public class ClienteService {
 			repo.deleteById(id);
 		}
 		catch(DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível deletar pois existem entidade associadas.");
+			throw new DataIntegrityException("Não é possível deletar pois existem pedidos associados.");
 		}
 	}
 	
@@ -92,7 +93,7 @@ public class ClienteService {
 		
 		return repo.findAll(pageRequest);
 	}
-	
+	@Transactional
 	public Cliente insert(Cliente obj) {
 		obj.setId(null);
 		obj = repo.save(obj);
