@@ -72,6 +72,7 @@ public class DBService {
 		Categoria cat6 = new Categoria(null, "Decoração");
 		Categoria cat7 = new Categoria(null, "Perfumaria");
 		
+		
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat3, cat4, cat5, cat6, cat7));
 		
 		Produto p1 = new Produto(null, "Computador", 2000.00);
