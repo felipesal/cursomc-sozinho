@@ -52,6 +52,7 @@ public class Cliente implements Serializable {
 	@OneToMany(mappedBy = "cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
 
+
 	public Cliente() {
 		addPerfil(Perfil.CLIENTE);
 	}
@@ -107,6 +108,15 @@ public class Cliente implements Serializable {
 		this.tipo = tipo.getCod();
 	}
 
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	
 	public List<Endereco> getEnderecos() {
 		return enderecos;
 	}
