@@ -17,10 +17,13 @@ import com.example.cursomcsozinho.domain.Cliente;
 import com.example.cursomcsozinho.domain.Endereco;
 import com.example.cursomcsozinho.domain.dto.ClienteDTO;
 import com.example.cursomcsozinho.domain.dto.ClienteNewDTO;
+import com.example.cursomcsozinho.domain.enums.Perfil;
 import com.example.cursomcsozinho.domain.enums.TipoCliente;
 import com.example.cursomcsozinho.repositories.ClienteRepository;
 import com.example.cursomcsozinho.repositories.EnderecoRepository;
-import com.example.cursomcsozinho.resources.exceptions.DataIntegrityException;
+import com.example.cursomcsozinho.security.UserSS;
+import com.example.cursomcsozinho.services.exceptions.AuthorizationException;
+import com.example.cursomcsozinho.services.exceptions.DataIntegrityException;
 import com.example.cursomcsozinho.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -37,6 +40,12 @@ public class ClienteService {
 	
 	
 	public Cliente find(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado!");
+		}
+		
 		Optional<Cliente> obj = repo.findById(id);
 		
 		return obj.orElseThrow(() -> new ObjectNotFoundException(

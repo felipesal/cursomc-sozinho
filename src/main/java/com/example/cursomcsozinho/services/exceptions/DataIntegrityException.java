@@ -1,4 +1,4 @@
-package com.example.cursomcsozinho.resources.exceptions;
+package com.example.cursomcsozinho.services.exceptions;
 
 public class DataIntegrityException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

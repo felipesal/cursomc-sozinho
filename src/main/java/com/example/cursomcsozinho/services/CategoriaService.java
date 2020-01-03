@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.example.cursomcsozinho.domain.Categoria;
 import com.example.cursomcsozinho.domain.dto.CategoriaDTO;
 import com.example.cursomcsozinho.repositories.CategoriaRepository;
-import com.example.cursomcsozinho.resources.exceptions.DataIntegrityException;
+import com.example.cursomcsozinho.services.exceptions.DataIntegrityException;
 import com.example.cursomcsozinho.services.exceptions.ObjectNotFoundException;
 
 @Service
